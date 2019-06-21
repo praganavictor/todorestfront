@@ -1,6 +1,21 @@
 import React from "react";
-import Routes from "./routes.js";
+import { Provider } from "react-redux";
 
-const App = () => <Routes />;
+import "./config/ReactotronConfig";
+
+import store from "./store";
+import Routes from "./routes";
+
+console.tron.log("testando");
+
+function App() {
+  return (
+    <div className="App">
+      <Provider store={store}>
+        <Routes />
+      </Provider>
+    </div>
+  );
+}
 
 export default App;
