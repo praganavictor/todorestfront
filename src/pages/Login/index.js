@@ -1,59 +1,62 @@
-import React, { Component } from "react";
-import { Link, withRouter } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Redirect } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import api from "../../services/api";
 import { login } from "../../services/auth";
 
 import { Form, Container } from "./styles";
 
-class SignIn extends Component {
-  state = {
-    email: "",
-    password: "",
-    error: ""
-  };
+function setActiveUser(user) {
+  return { type: "activeUser", user };
+}
 
-  handleSignIn = async e => {
+export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [toApp, setToApp] = useState(false);
+
+  const dispatch = useDispatch();
+
+  async function handleSignIn(e) {
     e.preventDefault();
-    const { email, password } = this.state;
     if (!email || !password) {
-      this.setState({ error: "Preencha e-mail e senha para continuar!" });
+      setError("Preencha e-mail e senha para continuar!");
     } else {
       try {
         const response = await api.post("/authenticate", { email, password });
         login(response.data.token);
-        this.props.history.push("/app");
+        console.log("response.data.user.name", response.data.user.name);
+        dispatch(setActiveUser(response.data.user.name));
+        setToApp(true);
       } catch (err) {
-        this.setState({
-          error:
-            "Houve um problema com o login, verifique suas credenciais. T.T"
-        });
+        setError(
+          "Houve um problema com o login, verifique suas credenciais. T.T"
+        );
       }
     }
-  };
-
-  render() {
-    return (
-      <Container>
-        <Form onSubmit={this.handleSignIn}>
-          {this.state.error && <p>{this.state.error}</p>}
-          <input
-            type="email"
-            placeholder="Endereço de e-mail"
-            onChange={e => this.setState({ email: e.target.value })}
-          />
-          <input
-            type="password"
-            placeholder="Senha"
-            onChange={e => this.setState({ password: e.target.value })}
-          />
-          <button type="submit">Entrar</button>
-          <hr />
-          <Link to="/signup">Criar conta grátis</Link>
-        </Form>
-      </Container>
-    );
   }
-}
 
-export default withRouter(SignIn);
+  return (
+    <Container>
+      {toApp ? <Redirect to="/app" /> : null}
+      <Form onSubmit={handleSignIn}>
+        {error && <p>{error}</p>}
+        <input
+          type="email"
+          placeholder="Endereço de e-mail"
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Senha"
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button type="submit">Entrar</button>
+        <hr />
+        <Link to="/signup">Criar conta grátis</Link>
+      </Form>
+    </Container>
+  );
+}

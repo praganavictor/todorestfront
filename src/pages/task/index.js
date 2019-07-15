@@ -1,22 +1,40 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-import * as TaskActions from "../../store/actions/task";
+function addTaskAction(task) {
+  return { type: "addTask", task };
+}
 
-class Task extends Component {
-  render() {
-    const { tasks } = this.props;
-    console.log(tasks);
+export default function Task() {
+  const tasks = useSelector(state => state.task);
+  const dispatch = useDispatch();
 
-    return (
+  function addTask() {
+    dispatch(
+      addTaskAction({
+        _id: Date.now(),
+        title: "fazer algo..",
+        description: "alguma coisa q deveria fazer",
+        comments: []
+      })
+    );
+  }
+
+  return (
+    <>
       <div>
+        {/* <h1>{user}</h1>
         <form>
           <input type="text" />
-          <button type="button">Add Task</button>
+          <button type="button" onClick={addTask}>
+            Add Task
+          </button>
         </form>
+        <nav>
+          <Link to={"/newtask"}>New</Link>
+        </nav> */}
         <h1>Tasks:</h1>
-        {tasks.length > 0 ? (
+        {tasks ? (
           tasks.map(task => (
             <div key={task._id}>
               <h1>{task.title}</h1>
@@ -24,7 +42,7 @@ class Task extends Component {
               Comments:
               {task.comments.length > 0 ? (
                 task.comments.map(comment => (
-                  <p key={comment._id}>{comment.content}</p>
+                  <p key={comment}>{comment.content}</p>
                 ))
               ) : (
                 <p>Nenhum comentario</p>
@@ -35,18 +53,6 @@ class Task extends Component {
           <p>Nenhuma task</p>
         )}
       </div>
-    );
-  }
+    </>
+  );
 }
-
-const mapStateToProps = state => ({
-  tasks: state.task
-});
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(TaskActions, dispatch);
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Task);

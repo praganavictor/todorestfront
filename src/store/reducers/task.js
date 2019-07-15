@@ -1,7 +1,7 @@
 export default function task(state = [], action) {
-  switch (action.types) {
+  switch (action.type) {
     case "addTask":
-      return [...state, action.payload];
+      return [...state, action.task];
     default:
       return state;
   }
