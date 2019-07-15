@@ -11,6 +11,10 @@ class Task extends Component {
 
     return (
       <div>
+        <form>
+          <input type='text' onChange={} />
+          <button type='button'>Add Task</button>
+        </form>
         <h1>Tasks:</h1>
         {tasks.length > 0 ? (
           tasks.map(task => (
