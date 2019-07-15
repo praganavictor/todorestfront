@@ -6,14 +6,14 @@ import * as TaskActions from "../../store/actions/task";
 
 class Task extends Component {
   render() {
-    const { addTask, tasks } = this.props;
+    const { tasks } = this.props;
     console.log(tasks);
 
     return (
       <div>
         <form>
-          <input type='text' onChange={} />
-          <button type='button'>Add Task</button>
+          <input type="text" />
+          <button type="button">Add Task</button>
         </form>
         <h1>Tasks:</h1>
         {tasks.length > 0 ? (
